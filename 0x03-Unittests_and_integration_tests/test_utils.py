@@ -6,7 +6,7 @@ Unit tests for the utils.py
 import unittest
 from unittest.mock import patch
 import utils
-from utils import access_nested_map, get_json
+from utils import access_nested_map, get_json, memoize
 from parameterized import parameterized
 from typing import Mapping, Sequence, Any, Dict
 
@@ -78,6 +78,34 @@ class TestGetJson(unittest.TestCase):
 
         self.assertEqual(response, test_payload)
         mock_get.assert_called_once_with(test_url)
+
+
+class TestMemoize(unittest.TestCase):
+    """Tests the memoize decorator."""
+    def test_memoize(self):
+        """
+        Tests that a memoized property calls its underlying method only once.
+        """
+
+        class TestClass:
+            """Test Class"""
+            def a_method(self):
+                """This is the memoized property."""
+                return 42
+
+            @memoize
+            def a_property(self):
+                """This is the memoized property."""
+                return self.a_method()
+        with patch.object(TestClass, "a_method") as mock_a_method:
+            mock_a_method.return_value = 42
+            instance = TestClass()
+            result1 = instance.a_property
+            result2 = instance.a_property
+
+            self.assertEqual(result1, 42)
+            self.assertEqual(result2, 42)
+            mock_a_method.assert_called_once()
 
 
 if __name__ == "__main__":
