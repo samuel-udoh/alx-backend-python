@@ -1,4 +1,3 @@
-import re
 from seed import connect_to_prodev
 from mysql.connector import Error
 
