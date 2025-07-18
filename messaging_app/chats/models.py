@@ -13,7 +13,7 @@ class User(AbstractUser):
     This model satisfies all requirements from the "User" entity specification.
     """
     username=None
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True, editable=False)
+    user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True, editable=False)
     first_name = models.CharField(_("First Name"), max_length=150, blank=False, null=False)
     last_name = models.CharField(_("Last Name"), max_length=150, blank=False, null=False)
     email = models.EmailField(_("email address"), unique=True, blank=False, null=False)
@@ -40,7 +40,7 @@ class Conversation(models.Model):
     Represents a conversation between two or more users.
     """
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True, editable=False)
+    conversation_id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=False)
 
     participants = models.ManyToManyField(
@@ -57,7 +57,7 @@ class Message(models.Model):
     """
     Represents a single message sent within a conversation.
     """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
+    message_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
 
     message_body = models.TextField(blank=False, null=False)
 

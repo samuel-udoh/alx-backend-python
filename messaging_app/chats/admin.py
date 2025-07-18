@@ -53,7 +53,7 @@ class ConversationAdmin(admin.ModelAdmin):
     Configuration for the Conversation model in the admin interface.
     """
     # Fields to display in the main conversation list
-    list_display = ('id', 'created_at', 'display_participants')
+    list_display = ('conversation_id', 'created_at', 'display_participants')
     
     # Use the much better horizontal filter for selecting participants
     filter_horizontal = ('participants',)
@@ -82,7 +82,7 @@ class MessageAdmin(admin.ModelAdmin):
     Configuration for the Message model in the admin interface.
     """
     # Fields to display in the message list
-    list_display = ('id', 'sender', 'conversation', 'sent_at', 'short_body')
+    list_display = ('message_id', 'sender', 'conversation', 'sent_at', 'short_body')
     
     # Make fields read-only. A message, once sent, should not be altered.
     readonly_fields = ('sender', 'conversation', 'sent_at', 'message_body')
