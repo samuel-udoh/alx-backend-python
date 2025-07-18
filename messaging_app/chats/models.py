@@ -33,6 +33,10 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+    @property
+    def password_hash(self):  # convenience alias to match your spec naming
+        return self.password 
 
 
 class Conversation(models.Model):
