@@ -98,7 +98,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
                 magic_response.json.return_value = cls.org_payload
 
             return magic_response
-        cls.get_patcher = patch("utils.requests.get")
+        cls.get_patcher = patch("requests.get")
         mock_request_get = cls.get_patcher.start()
         mock_request_get.side_effect = mock_side_effect
 
