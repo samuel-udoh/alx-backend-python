@@ -35,7 +35,7 @@ class User(AbstractUser):
         return self.email
     
     @property
-    def password_hash(self):  # convenience alias to match your spec naming
+    def password_hash(self):  
         return self.password 
 
 
@@ -45,11 +45,12 @@ class Conversation(models.Model):
     """
 
     conversation_id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True, editable=False)
-    created_at = models.DateTimeField(auto_now_add=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     participants = models.ManyToManyField(
         User,
-        related_name="conversation"
+        related_name="conversation",
+        blank=True
     )
 
     @override
