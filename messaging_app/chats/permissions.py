@@ -33,8 +33,8 @@ class IsParticipantOfConversation(permissions.BasePermission):
 
         if request.method in permissions.SAFE_METHODS:
             return True
-        if not hasattr(obj, "sender"):
-            # The object is a Conversation. We allow participants to perform safe methods only.
-            # For unsafe methods on a Conversation, we deny permission.
+        if request.method in ["PUT", "PATCH", "DELETE"]:
+            if hasattr(obj, "sender"):
+                return obj.sender == request.user
             return False
-        return obj.sender ==  request.user
+        return False

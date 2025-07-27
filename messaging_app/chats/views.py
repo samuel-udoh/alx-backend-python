@@ -5,6 +5,8 @@ from django.shortcuts import get_object_or_404
 from .permissions import IsParticipantOfConversation
 from rest_framework.permissions import IsAuthenticated
 from .filters import MessageFilter, ConversationFilter
+from rest_framework.status import HTTP_403_FORBIDDEN
+from rest_framework.exceptions import PermissionDenied
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
@@ -17,6 +19,10 @@ class ConversationViewSet(viewsets.ModelViewSet):
         for the currently authenticated user.
         """
         user = self.request.user
+        conversation = get_object_or_404(Conversation, pk=self.kwargs['conversation_pk'])
+
+        if user not in conversation.participants.all():
+            raise PermissionDenied(detail="You are not a participant of this conversation.", code=HTTP_403_FORBIDDEN)
         return Conversation.objects.filter(participants=user)
 
 class MessageViewSet(viewsets.ModelViewSet):
