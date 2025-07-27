@@ -51,6 +51,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'chats.middleware.RequestLoggingMiddleware'
 ]
 
 ROOT_URLCONF = 'messaging_app.urls'
@@ -128,9 +130,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        "rest_framework.authentication.BasicAuthentication"
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'messaging_app.chats.auth.Authentication'
+        'chats.auth.Authentication'
     ],
 
     'DEFAULT_PERMISSION_CLASSES': [
@@ -138,7 +140,7 @@ REST_FRAMEWORK = {
         # 'rest_framework.permissions.AllowAny'
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'DEFAULT_PAGINATION_CLASS': 'messaging_app.chats.pagination.CustomPagination',
+    'DEFAULT_PAGINATION_CLASS': 'chats.pagination.CustomPagination',
     'PAGE_SIZE': 20,
 
     'DEFAULT_FILTER_BACKENDS': (
@@ -151,4 +153,30 @@ from datetime import timedelta
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": "requests.log",
+            "formatter": "simple"
+        },
+    },
+    "loggers": {
+        "chats.middleware": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": True,
+        },
+    },
+    'formatters' : {
+        'simple': {
+            'format': '{message}',
+            'style': '{'
+        }
+    }
 }
