@@ -42,7 +42,12 @@ INSTALLED_APPS = [
     'django_filters',
     'chats'
 ]
-
+CACHES = {
+    'default' : {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'rate-limit'
+    }
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -53,7 +58,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'chats.middleware.RequestLoggingMiddleware',
-    'chats.middleware.RestrictAccessByTimeMiddleware'
+    'chats.middleware.RestrictAccessByTimeMiddleware',
+    'chats.middleware.OffensiveLanguageMiddleware'
 ]
 
 ROOT_URLCONF = 'messaging_app.urls'
