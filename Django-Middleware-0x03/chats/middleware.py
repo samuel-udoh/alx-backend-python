@@ -66,3 +66,29 @@ class OffensiveLanguageMiddleware:
             return x_forwarded_for.split(',')[0]
         return request.META.get('REMOTE_ADDR')
 
+
+class RolepermissionMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+    def __call__(self, request):
+        restricted_paths = ['/dashboard/', '/api/admin-actions/']
+        is_restricted_path = any(request.path.startwith(path) for path in restricted_paths)
+
+        if not is_restricted_path:
+            return self.get_response(request)
+        
+        if not request.user.is_authenticated:
+            return JsonResponse({
+                "error": "Authentication required to access this page."
+            }, status=401)
+        
+        is_admin = request.user.groups.filter(name='Admin').exists()
+        is_mod = request.user.groups.filter(name='Moderator').exists()
+
+        if is_admin or is_mod:
+            return self.get_response(request)
+        else:
+            # If they are logged in but don't have the role, they are forbidden.
+            return JsonResponse({
+                "error": "You do not have permission to perform this action."
+            }, status=403) 
