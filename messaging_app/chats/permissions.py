@@ -1,7 +1,6 @@
-from rest_framework.permissions import BasePermission
-from .models import Conversation
+from rest_framework import permissions
 
-class IsParticipantOfConversation(BasePermission):
+class IsParticipantOfConversation(permissions.BasePermission):
     """
     Custom permission to only allow participants of a conversation to access it.
     This also applies to messages within that conversation.
@@ -26,4 +25,16 @@ class IsParticipantOfConversation(BasePermission):
         else:
             # This is a Conversation instance.
             conversation = obj
-        return request.user and conversation.participants.all()
+        is_participants = request.user in conversation.participants.all()
+        if not is_participants:
+            return False
+        
+        # If the request is a "safe" method (GET, HEAD, OPTIONS), being a participant is enough.
+
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        if not hasattr(obj, "sender"):
+            # The object is a Conversation. We allow participants to perform safe methods only.
+            # For unsafe methods on a Conversation, we deny permission.
+            return False
+        return obj.sender ==  request.user

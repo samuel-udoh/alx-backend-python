@@ -3,11 +3,12 @@ from .models import User, Message, Conversation
 from .serializers import UserSerializer, MessageSerializer, ConversationSerializer
 from django.shortcuts import get_object_or_404
 from .permissions import IsParticipantOfConversation
+from rest_framework.permissions import IsAuthenticated
 from .filters import MessageFilter, ConversationFilter
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
-    permission_classes = [IsParticipantOfConversation]
+    permission_classes = [IsAuthenticated, IsParticipantOfConversation]
     filterset_class = ConversationFilter
 
     def get_queryset(self):
@@ -22,8 +23,8 @@ class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
 
     serializer_class = MessageSerializer
-    permission_classes = [IsParticipantOfConversation]
-    filter_class = MessageFilter
+    permission_classes = [IsAuthenticated, IsParticipantOfConversation]
+    filterset_class = MessageFilter
     ordering_fields = ['timestamp']
     ordering = ['-timestamp']  # newest message first
 
