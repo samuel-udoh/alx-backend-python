@@ -13,7 +13,7 @@ class User(AbstractUser):
     This model satisfies all requirements from the "User" entity specification.
     """
     username=None
-    user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True, editable=False)
     first_name = models.CharField(_("First Name"), max_length=150, blank=False, null=False)
     last_name = models.CharField(_("Last Name"), max_length=150, blank=False, null=False)
     email = models.EmailField(_("email address"), unique=True, blank=False, null=False)
@@ -82,7 +82,7 @@ class Message(models.Model):
     conversation = models.ForeignKey(
         Conversation,
         on_delete=models.CASCADE,
-        related_name='messages'
+        related_name='messages',
     )
 
     class Meta:
