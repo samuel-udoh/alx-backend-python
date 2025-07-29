@@ -22,8 +22,11 @@ def log_message_edit(sender, instance, **kwargs):
             return
         
         if original_message.content != instance.content:
+            editor = getattr(instance, 'editor', None)
             MessageHistory.objects.create(
                 message=original_message,
-                old_content = original_message.content
+                old_content = original_message.content,
+                edited_by=editor
             )
             instance.edited = True
+            instance.last_edited_by = editor

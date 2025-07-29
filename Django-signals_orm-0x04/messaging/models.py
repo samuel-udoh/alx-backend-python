@@ -10,7 +10,9 @@ class Message(models.Model):
     receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='received_messages')
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    edited = models.BooleanField(default=False) # New: Track read status
+    edited = models.BooleanField(default=False) 
+    last_edited_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, 
+    blank=True, related_name='edited_message', on_delete=models.SET_NULL)
 
     class Meta:
         # New: Order messages by timestamp by default
@@ -33,6 +35,8 @@ class MessageHistory(models.Model):
     message = models.ForeignKey(Message, related_name="history", on_delete=models.CASCADE)
     old_content = models.TextField()
     edited_at = models.DateTimeField(auto_now_add=True)
+    edited_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
+
 
     class META:
         ordering = ["-edited_at"]
