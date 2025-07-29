@@ -13,14 +13,18 @@ class Message(models.Model):
     edited = models.BooleanField(default=False) 
     last_edited_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, 
     blank=True, related_name='edited_message', on_delete=models.SET_NULL)
+    parent_message = models.ForeignKey('self', null=True, blank=True,
+    on_delete=models.CASCADE, related_name='replies')
 
     class Meta:
         # New: Order messages by timestamp by default
         ordering = ['timestamp']
 
     def __str__(self):
-        # New: A helpful string representation of the object
-        return f"From {self.sender.username} to {self.receiver.username} at {self.timestamp:%Y-%m-%d %H:%M}"
+        if self.parent_message:
+            return f"Reply from {self.sender.username}"
+        return f"Message from {self.sender.username}"
+
 
 class Notification(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="notified_user")
