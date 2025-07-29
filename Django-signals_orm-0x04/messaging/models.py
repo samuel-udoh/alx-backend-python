@@ -10,7 +10,7 @@ class Message(models.Model):
     receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='received_messages')
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    is_read = models.BooleanField(default=False) # New: Track read status
+    edited = models.BooleanField(default=False) # New: Track read status
 
     class Meta:
         # New: Order messages by timestamp by default
@@ -28,3 +28,13 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification for {self.user.username} about message from {self.message.sender.username}"
+
+class MessageHistory(models.Model):
+    message = models.ForeignKey(Message, related_name="history", on_delete=models.CASCADE)
+    old_content = models.TextField()
+    edited_at = models.DateTimeField(auto_now_add=True)
+
+    class META:
+        ordering = ["-edited_at"]
+    def __str__(self):
+        return f"History for message {self.message.id} at {self.edited_at}"
