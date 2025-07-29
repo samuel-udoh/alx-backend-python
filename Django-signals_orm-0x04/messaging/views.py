@@ -14,8 +14,14 @@ def delete_user(request):
     return Response({"detail": "User account deleted successfully."}, status=HTTP_204_NO_CONTENT)
 class ThreadedMessageListView(APIView):
     def get(self, request):
-        messages = Message.objects.filter(parent_message__isnull=True)\
-            .select_related('sender')\
+        messages = Message.objects.filter(
+                parent_message__isnull=True,
+                sender=request.user
+                ) | Message.objects.filter(
+                    parent_message__isnull=True,
+                    receiver=request.user
+                )\
+            .select_related("receiver")\
                 .prefetch_related(
                     'replies',
                     'replies__replies',

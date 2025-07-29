@@ -12,4 +12,4 @@ class MessageThreadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Message
-        fields = ['id', 'sender', 'content', 'timestamp', 'replies']
+        fields = ['id', 'sender','receiver', 'content', 'timestamp', 'replies']
