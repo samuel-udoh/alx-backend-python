@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.views import APIView
-from .serializers import MessageThreadSerializer
+from .serializers import MessageThreadSerializer, MessageSerializer
 from .models import Message
 
 
@@ -29,4 +29,10 @@ class ThreadedMessageListView(APIView):
                     'replies__replies__sender'
                 )
         serializer = MessageThreadSerializer(messages, many=True)
+        return Response(serializer.data)
+
+class UnreadMessagesView(APIView):
+    def get(self, request):
+        unread_messages = Message.unread.for_user(request.user)
+        serializer = MessageSerializer(unread_messages)
         return Response(serializer.data)

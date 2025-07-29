@@ -1,6 +1,6 @@
 from tkinter import CASCADE
 from django.db import models
-
+from .managers import UnreadMessagesManager
 # Create your models here.
 from django.db import models
 from django.conf import settings
@@ -15,6 +15,10 @@ class Message(models.Model):
     blank=True, related_name='edited_message', on_delete=models.SET_NULL)
     parent_message = models.ForeignKey('self', null=True, blank=True,
     on_delete=models.CASCADE, related_name='replies')
+    read = models.BooleanField(default=False)
+    objects = models.Manager()
+    unread = UnreadMessagesManager()
+
 
     class Meta:
         # New: Order messages by timestamp by default
