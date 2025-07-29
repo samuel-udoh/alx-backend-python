@@ -5,6 +5,8 @@ from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.views import APIView
 from .serializers import MessageThreadSerializer, MessageSerializer
 from .models import Message
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 
 @api_view(['DELETE'])
@@ -13,6 +15,7 @@ def delete_user(request):
     user.delete()
     return Response({"detail": "User account deleted successfully."}, status=HTTP_204_NO_CONTENT)
 class ThreadedMessageListView(APIView):
+    @method_decorator(cache_page(60))
     def get(self, request):
         messages = Message.objects.filter(
                 parent_message__isnull=True,
