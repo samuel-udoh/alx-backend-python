@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -78,8 +78,12 @@ WSGI_APPLICATION = 'messaging_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('MYSQL_DATABASE'),
+        'USER': os.getenv('MYSQL_USER'),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD'),
+        'HOST': os.getenv('MYSQL_HOST', 'db'),
+        'PORT': os.getenv('MYSQL_PORT', '3306'),
     }
 }
 
@@ -128,9 +132,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        "rest_framework.authentication.BasicAuthentication"
+        "rest_framework.authentication.BasicAuthentication",
         'rest_framework.authentication.SessionAuthentication',
-        'messaging_app.chats.auth.Authentication'
+        'chats.auth.Authentication'
     ],
 
     'DEFAULT_PERMISSION_CLASSES': [
@@ -138,7 +142,7 @@ REST_FRAMEWORK = {
         # 'rest_framework.permissions.AllowAny'
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'DEFAULT_PAGINATION_CLASS': 'messaging_app.chats.pagination.CustomPagination',
+    'DEFAULT_PAGINATION_CLASS': 'chats.pagination.CustomPagination',
     'PAGE_SIZE': 20,
 
     'DEFAULT_FILTER_BACKENDS': (
